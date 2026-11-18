@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Orbit</title>
+<title>Code X</title>
 <style>
 :root{--bg:#f6f5ef;--fg:#16181a;--mut:#6d726f;--card:#fff;--line:#dcdcd2;--acc:#1f8a3b;--neg:#c0392b;--glow:rgba(31,138,59,.12);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#050606;--fg:#eceee9;--mut:#8b918c;--card:#0d0f0e;--line:#222725;--acc:#a6f04d;--neg:#ff6b5e;--glow:rgba(166,240,77,.10);color-scheme:dark}}
@@ -21,6 +21,17 @@ h2{font-size:28px;margin:18px 0 4px;font-weight:600;letter-spacing:-.01em}
 .sub{color:var(--mut);margin:0 0 18px}
 .big{font-size:clamp(56px,19vw,104px);font-weight:700;letter-spacing:-.04em;line-height:.9;color:transparent;-webkit-text-stroke:1px var(--line);margin:30px 0 10px;user-select:none}
 .name,.ed{cursor:text;border-bottom:1px dashed var(--line)}.ph{display:block;width:100%;max-height:420px;object-fit:cover;border-radius:14px;margin:12px 0;filter:grayscale(1)}.ph[hidden]{display:none}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px}
+.pill{display:flex;gap:10px;justify-content:center;margin:12px auto;border:1px solid var(--line);border-radius:12px;padding:8px 14px;width:max-content;max-width:100%;font-size:14px}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.wd{text-align:center;color:var(--mut);font-size:11px;padding:4px 0}
+.cd{border:1px solid var(--line);border-radius:8px;padding:4px 3px;min-height:62px;font-size:10px;display:flex;flex-direction:column;gap:1px;overflow:hidden}
+.cd b{font-size:12px;font-weight:500;color:var(--mut)}
+.cd small{color:var(--mut);font-size:10px;white-space:nowrap}
+.cd span{font-size:11px;font-weight:600}
+.cd.w{background:color-mix(in srgb,var(--acc) 12%,transparent)}
+.cd.l{background:color-mix(in srgb,var(--neg) 12%,transparent)}
+.cd.td{border-color:var(--fg)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
 input,select,textarea{background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font:inherit;min-width:0;flex:1 1 90px}
@@ -52,7 +63,7 @@ section{display:none}section.on{display:block}
 <main>
 
 <section id="home">
-  <div class="mut">Orbit</div>
+  <div class="brand"><svg id="logo" width="34" height="34" viewBox="0 0 21 21" aria-hidden="true"></svg><span>Code X</span></div>
   <h1><span class="name" id="nm" contenteditable="true" spellcheck="false" title="Ketuk untuk ganti nama"></span></h1>
   <p class="sub"><span class="ed" id="tg" contenteditable="true" spellcheck="false" title="Ketuk untuk ganti"></span></p>
   <div class="big" id="bg" contenteditable="true" spellcheck="false" style="cursor:text" title="Ketuk untuk ganti"></div>
@@ -98,11 +109,12 @@ section{display:none}section.on{display:block}
   <div class="row"><button class="btn ghost" id="pv">‹</button><span class="mut" id="rg" style="align-self:center;flex:1;text-align:center"></span><button class="btn ghost" id="nx">›</button></div>
   <div class="row"><button class="btn ghost on" id="uR">R</button><button class="btn ghost" id="uD">$</button><button class="btn ghost" id="th">Ganti tema</button></div>
   <div class="card" id="rc"></div>
+  <div class="card" id="cal"></div>
 </section>
 
 </main>
 <script>
-var S={name:"Nama Kamu",tag:"Tempat aku mencatat setiap trade, menyimpan catatan, dan mengevaluasi hasilnya.",big:"TRADE",photo:"",trades:[],lib:[],news:[]},tab="home",off=0,unit="r";
+var S={name:"Nama Kamu",tag:"Tempat aku mencatat setiap trade, menyimpan catatan, dan mengevaluasi hasilnya.",big:"TRADE",photo:"",trades:[],lib:[],news:[]},tab="home",off=0,unit="r",moff=0;
 function load(){try{var v=localStorage.getItem("rt1");if(v)S=Object.assign(S,JSON.parse(v));else seed()}catch(e){seed()}}
 function save(){try{localStorage.setItem("rt1",JSON.stringify(S))}catch(e){}}
 function ds(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
@@ -157,10 +169,27 @@ $("rc").innerHTML='<div class="mut">Laporan mingguan</div><div class="count '+cl
 '<div class="stats"><div><b>'+g+" / 5</b><span class=mut>hari hijau</span></div><div><b>"+n+"</b><span class=mut>trade</span></div><div><b>"+(n?Math.round(wins/n*100):0)+"%</b><span class=mut>win rate</span></div></div>"+
 w.days.map(function(d){var v=d[k];return'<div class="drow"><b>'+d.l+'</b><div class="bar"><i class="'+(v<0?"n":"")+'" style="width:'+(mx?Math.abs(v)/mx*100:0)+'%"></i></div><span class="'+cls(v)+'">'+(d.n?fmt(v,unit):"–")+"</span></div>"}).join("")+
 '<div class="mut" style="margin-top:14px">Pergerakan</div><svg viewBox="0 0 290 100" width="100%" role="img" aria-label="Grafik kumulatif mingguan"><line x1="10" x2="280" y1="'+Y(0)+'" y2="'+Y(0)+'" stroke="var(--line)"/><path d="'+path+'" fill="none" stroke="var(--acc)" stroke-width="2.5" stroke-linejoin="round"/>'+pts.map(function(p){return'<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="3" fill="var(--acc)"/>'}).join("")+"</svg>";
-$("uR").classList.toggle("on",unit=="r");$("uD").classList.toggle("on",unit=="u")}
+$("uR").classList.toggle("on",unit=="r");$("uD").classList.toggle("on",unit=="u");drawC()}
 $("pv").onclick=function(){off--;drawR()};$("nx").onclick=function(){off++;drawR()};
 $("uR").onclick=function(){unit="r";drawR()};$("uD").onclick=function(){unit="u";drawR()};
 $("th").onclick=function(){var r=document.documentElement,dark=r.dataset.theme?r.dataset.theme=="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=dark?"light":"dark"};
+function cf(v,u){var a=Math.abs(v);return u=="r"?a.toFixed(1).replace(/\.0$/,"")+"R":"$"+(a>=1000?(a/1000).toFixed(1).replace(/\.0$/,"")+"k":Math.round(a))}
+function drawC(){var d0=new Date();d0.setHours(12,0,0,0);d0.setDate(1);d0.setMonth(d0.getMonth()+moff);var y=d0.getFullYear(),m=d0.getMonth(),k=unit=="r"?"r":"u",dim=new Date(y,m+1,0).getDate(),st=d0.getDay(),pre=y+"-"+String(m+1).padStart(2,"0")+"-",map={},tot=0,days=0,today=ds(new Date());
+S.trades.forEach(function(t){if(t.d.indexOf(pre)==0){var e=map[t.d]||(map[t.d]={n:0,v:0});e.n++;e.v+=t[k]}});
+Object.keys(map).forEach(function(z){tot+=map[z].v;days++});
+var h=["Min","Sen","Sel","Rab","Kam","Jum","Sab"].map(function(n){return'<div class="wd">'+n+"</div>"}).join("");
+for(var i=0;i<st;i++)h+="<i></i>";
+for(var d=1;d<=dim;d++){var key=pre+String(d).padStart(2,"0"),e=map[key];
+h+='<div class="cd'+(e?(e.v>0?" w":e.v<0?" l":""):"")+(key==today?" td":"")+'"><b>'+d+"</b>"+(e?"<small>"+e.n+" ⇆</small><span class=\""+cls(e.v)+"\">"+cf(e.v,unit)+"</span>":"")+"</div>"}
+$("cal").innerHTML='<div class="row" style="align-items:center"><button class="btn ghost" id="cp">‹</button><b style="flex:1;text-align:center">'+d0.toLocaleDateString("id-ID",{month:"long",year:"numeric"})+'</b><button class="btn ghost" id="cq">›</button></div><div class="pill"><span>PnL: <b class="'+cls(tot)+'">'+fmt(tot,unit)+'</b></span><span class="mut">|</span><span>Hari: <b>'+days+'</b></span></div><div class="cg">'+h+"</div>";
+$("cp").onclick=function(){moff--;drawC()};$("cq").onclick=function(){moff++;drawC()}}
+function q(r,c){var f=function(a,b){var x=r-a,y=c-b;if(x<0||y<0||x>6||y>6)return-1;return x==0||x==6||y==0||y==6||(x>=2&&x<=4&&y>=2&&y<=4)?1:0},v=f(0,0);if(v<0)v=f(0,14);if(v<0)v=f(14,0);if(v>=0)return v;
+if((r<=7&&c<=7)||(r<=7&&c>=13)||(r>=13&&c<=7)||(r>=7&&r<=13&&c>=7&&c<=13))return 0;
+if(r>=15&&c>=15){var x=r-16,y=c-16;return x>=0&&x<=4&&y>=0&&y<=4&&(x==0||x==4||y==0||y==4||(x==2&&y==2))?1:0}
+if(r==6&&c>=8&&c<=12)return c%2?0:2;if(c==6&&r>=8&&r<=12)return r%2?0:2;
+return(r*131+c*71+r*c*13+(r^c)*7)%11<6?2:0}
+(function(){var s="";for(var r=0;r<21;r++)for(var c=0;c<21;c++){var v=q(r,c);if(v)s+='<circle cx="'+(c+.5)+'" cy="'+(r+.5)+'" r=".37" fill="var(--fg)"'+(v==2?' opacity=".6"':"")+"/>"}
+$("logo").innerHTML=s+'<path d="M8 8L13 13M13 8L8 13" stroke="var(--acc)" stroke-width="1.6" stroke-linecap="round"/>'})();
 function draw(){drawHome();drawJ();drawL();drawN();drawR()}
 load();var h=location.hash.slice(1);if(tabs.some(function(t){return t[0]==h}))tab=h;
 $("jd").value=ds(new Date());nav();draw();
