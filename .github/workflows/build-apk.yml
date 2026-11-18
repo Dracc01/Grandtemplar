@@ -22,35 +22,59 @@ jobs:
       - name: Buat ikon
         run: |
           pip install pillow
-          mkdir -p assets
           python - <<'EOF'
-          from PIL import Image, ImageDraw
-          G=(166,240,77,255);S=1024
-          art=Image.new('RGBA',(S,S),(0,0,0,0))
-          rd=ImageDraw.Draw(art)
-          rd.ellipse([70,300,954,724],outline=(166,240,77,150),width=22)
-          rd.ellipse([860,330,930,400],fill=G)
-          art=art.rotate(-28,resample=Image.BICUBIC)
-          d=ImageDraw.Draw(art)
-          for x,a,b,c,e in [(340,540,780,600,730),(512,420,700,470,650),(684,260,600,320,520)]:
-              d.line([x,a,x,b],fill=G,width=16)
-              d.rounded_rectangle([x-46,c,x+46,e],radius=16,fill=G)
-          def put(k):
-              n=int(S*k);r=art.resize((n,n),Image.LANCZOS)
-              z=Image.new('RGBA',(S,S),(0,0,0,0));z.paste(r,((S-n)//2,(S-n)//2),r);return z
-          bg=Image.new('RGBA',(S,S),(5,6,6,255))
+          from PIL import Image, ImageDraw, ImageFilter
+          import os
+          def q(r,c):
+              def f(a,b):
+                  x=r-a;y=c-b
+                  if x<0 or y<0 or x>6 or y>6: return -1
+                  return 1 if (x in(0,6) or y in(0,6) or (2<=x<=4 and 2<=y<=4)) else 0
+              v=f(0,0)
+              if v<0: v=f(0,14)
+              if v<0: v=f(14,0)
+              if v>=0: return v
+              if (r<=7 and c<=7) or (r<=7 and c>=13) or (r>=13 and c<=7): return 0
+              if 7<=r<=13 and 7<=c<=13: return 0
+              if r>=15 and c>=15:
+                  x=r-16;y=c-16
+                  if 0<=x<=4 and 0<=y<=4: return 1 if (x in(0,4) or y in(0,4) or (x==2 and y==2)) else 0
+                  return 0
+              if r==6 and 8<=c<=12: return 2 if c%2==0 else 0
+              if c==6 and 8<=r<=12: return 2 if r%2==0 else 0
+              return 2 if (r*131+c*71+r*c*13+(r^c)*7)%11<6 else 0
+          def art(frac,S=2048):
+              im=Image.new('RGBA',(S,S),(0,0,0,0));d=ImageDraw.Draw(im)
+              w=S*frac;p=w/21;o=(S-w)/2
+              for r in range(21):
+                  for c in range(21):
+                      v=q(r,c)
+                      if v:
+                          cx=o+(c+.5)*p;cy=o+(r+.5)*p;k=p*.37
+                          d.ellipse([cx-k,cy-k,cx+k,cy+k],fill=(236,238,233,255) if v==1 else (160,166,158,255))
+              xs=Image.new('RGBA',(S,S),(0,0,0,0));xd=ImageDraw.Draw(xs)
+              for a,b,e,g in ((8.0,8.0,13.0,13.0),(13.0,8.0,8.0,13.0)):
+                  xd.line([o+a*p,o+b*p,o+e*p,o+g*p],fill=(166,240,77,255),width=int(p*1.6))
+                  for x,y in ((a,b),(e,g)):
+                      m=p*.8;xd.ellipse([o+x*p-m,o+y*p-m,o+x*p+m,o+y*p+m],fill=(166,240,77,255))
+              gl=xs.filter(ImageFilter.GaussianBlur(p*.9))
+              gl.putalpha(gl.getchannel('A').point(lambda a:int(a*.5)))
+              out=Image.alpha_composite(Image.alpha_composite(gl,im),xs)
+              return out.resize((1024,1024),Image.LANCZOS)
+          os.makedirs('assets',exist_ok=True)
+          bg=Image.new('RGBA',(1024,1024),(5,6,6,255))
           bg.save('assets/icon-background.png')
-          put(.66).save('assets/icon-foreground.png')
-          Image.alpha_composite(bg,put(.80)).save('assets/icon-only.png')
+          art(.60).save('assets/icon-foreground.png')
+          Image.alpha_composite(bg,art(.78)).save('assets/icon-only.png')
           EOF
       - run: npm init -y
       - run: npm i @capacitor/core@6 @capacitor/android@6 @capacitor/cli@6 @capacitor/assets@3
-      - run: npx cap init Orbit com.orbit.journal --web-dir www
+      - run: npx cap init "Code X" com.codex.journal --web-dir www
       - run: npx cap add android
       - run: npx capacitor-assets generate --android
       - run: npx cap sync android
       - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
       - uses: actions/upload-artifact@v4
         with:
-          name: Orbit-APK
+          name: CodeX-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
