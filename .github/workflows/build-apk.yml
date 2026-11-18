@@ -1,0 +1,56 @@
+name: Build APK
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: mkdir -p www && cp index.html www/
+      - name: Buat ikon
+        run: |
+          pip install pillow
+          mkdir -p assets
+          python - <<'EOF'
+          from PIL import Image, ImageDraw
+          G=(166,240,77,255);S=1024
+          art=Image.new('RGBA',(S,S),(0,0,0,0))
+          rd=ImageDraw.Draw(art)
+          rd.ellipse([70,300,954,724],outline=(166,240,77,150),width=22)
+          rd.ellipse([860,330,930,400],fill=G)
+          art=art.rotate(-28,resample=Image.BICUBIC)
+          d=ImageDraw.Draw(art)
+          for x,a,b,c,e in [(340,540,780,600,730),(512,420,700,470,650),(684,260,600,320,520)]:
+              d.line([x,a,x,b],fill=G,width=16)
+              d.rounded_rectangle([x-46,c,x+46,e],radius=16,fill=G)
+          def put(k):
+              n=int(S*k);r=art.resize((n,n),Image.LANCZOS)
+              z=Image.new('RGBA',(S,S),(0,0,0,0));z.paste(r,((S-n)//2,(S-n)//2),r);return z
+          bg=Image.new('RGBA',(S,S),(5,6,6,255))
+          bg.save('assets/icon-background.png')
+          put(.66).save('assets/icon-foreground.png')
+          Image.alpha_composite(bg,put(.80)).save('assets/icon-only.png')
+          EOF
+      - run: npm init -y
+      - run: npm i @capacitor/core@6 @capacitor/android@6 @capacitor/cli@6 @capacitor/assets@3
+      - run: npx cap init Orbit com.orbit.journal --web-dir www
+      - run: npx cap add android
+      - run: npx capacitor-assets generate --android
+      - run: npx cap sync android
+      - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Orbit-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
