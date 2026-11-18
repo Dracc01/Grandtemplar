@@ -25,6 +25,7 @@ h2{font-size:28px;margin:18px 0 4px;font-weight:600;letter-spacing:-.01em}
 .name,.ed{cursor:text;border-bottom:1px dashed var(--line)}.ph{position:absolute;left:0;top:0;width:min(72%,340px);max-height:440px;object-fit:cover;z-index:3;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;will-change:transform;filter:grayscale(1) contrast(1.05);-webkit-mask-image:radial-gradient(ellipse 60% 60% at 50% 45%,#000 50%,transparent 100%);mask-image:radial-gradient(ellipse 60% 60% at 50% 45%,#000 50%,transparent 100%)}.ph[hidden]{display:none}
 #home{position:relative}[contenteditable]{outline:none}
 .lgw{position:absolute;left:0;top:0;z-index:5;width:46px;height:46px;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;will-change:transform}
+.lang{position:absolute;right:0;top:9px;width:54px;height:28px;border-radius:99px;border:1px solid var(--line);background:var(--card);padding:0;cursor:pointer;z-index:5}.lang i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--mut);transition:transform .25s,background .25s}.lang.en i{transform:translateX(26px);background:var(--acc)}
 .rp{position:absolute;width:10px;height:10px;margin:-5px;border-radius:50%;border:1.5px solid var(--acc);opacity:.7;pointer-events:none;animation:rp .9s ease-out forwards;z-index:6}@keyframes rp{to{transform:scale(14);opacity:0}}
 .ag{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.ac{position:relative;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--card);cursor:pointer}.ac .x{position:absolute;top:6px;right:8px;font-size:15px}.kt{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc)}.ac b{display:block;margin:8px 0 2px}.am{font-size:24px;font-weight:600;color:#4d7cff}
 .pill{display:flex;gap:10px;justify-content:center;margin:12px auto;border:1px solid var(--line);border-radius:12px;padding:8px 14px;width:max-content;max-width:100%;font-size:14px}
@@ -71,6 +72,7 @@ section{display:none}section.on{display:block}
 <section id="home">
   <div style="height:56px"></div>
   <div class="lgw" id="lgw" title="Tarik logo"><svg id="logo" width="46" height="46" viewBox="0 0 21 21" aria-hidden="true"></svg></div>
+  <button class="lang" id="lang" role="switch" aria-checked="false" aria-label="Bahasa / Language"><i></i></button>
   <h1><span class="name" id="nm" contenteditable="true" spellcheck="false" title="Ketuk untuk ganti nama"></span></h1>
   <p class="sub"><span class="ed" id="tg" contenteditable="true" spellcheck="false" title="Ketuk untuk ganti"></span></p>
   <div class="hero" id="hero">
@@ -79,7 +81,7 @@ section{display:none}section.on{display:block}
   </div>
   <div class="row"><button class="btn ghost" id="pb">Ganti foto</button><button class="btn ghost" id="rs">Kosongkan jurnal</button><button class="btn ghost" id="rp">Reset posisi</button></div>
   <input type="file" id="pf" accept="image/*" hidden>
-  <div class="card"><div class="mut">Minggu ini</div><div class="count" id="hw">0R</div><div class="mut" id="hs"></div></div>
+  <div class="card" id="pt"></div>
 </section>
 
 <section id="journal"><div id="jv"></div></section>
@@ -97,7 +99,7 @@ section{display:none}section.on{display:block}
 
 <section id="news">
   <h2>Berita</h2><p class="sub">Tambahkan berita high-impact yang kamu pantau. Waktu mengikuti jam perangkatmu.</p>
-  <div class="card"><div class="mut">Berita berikutnya</div><div class="count" id="cd">--:--:--</div><div class="mut" id="cn">Belum ada berita terjadwal</div></div>
+  <div class="card"><div class="mut">Berita berikutnya</div><div class="count" id="cd">--:--:--</div><div class="mut" id="cn"></div></div>
   <div class="card">
     <div class="row"><input id="ne" placeholder="Nama berita, mis. USD CPI"><input id="nt" type="datetime-local"></div>
     <button class="btn" id="na">Tambah berita</button>
@@ -115,8 +117,8 @@ section{display:none}section.on{display:block}
 
 </main>
 <script>
-var S={name:"Nama Kamu",tag:"Tempat aku mencatat setiap trade, menyimpan catatan, dan mengevaluasi hasilnya.",photo:"",pos:{},accts:[],trades:[],lib:[],news:[]},tab="home",off=0,unit="r",moff=0,cur=null;
-function load(){try{var v=localStorage.getItem("rt1");if(v)S=Object.assign(S,JSON.parse(v));else seed()}catch(e){seed()}fix()}
+var DN="Nama Kamu",DT="Tempat aku mencatat setiap trade, menyimpan catatan, dan mengevaluasi hasilnya.",S={name:DN,tag:DT,lang:"id",photo:"",pos:{},accts:[],trades:[],lib:[],news:[]},tab="home",off=0,unit="r",moff=0,cur=null,LG="id";
+function load(){try{var v=localStorage.getItem("rt1");if(v)S=Object.assign(S,JSON.parse(v));else seed()}catch(e){seed()}fix();LG=S.lang||"id"}
 function fix(){if(!S.accts||!S.accts.length)S.accts=[{id:1,n:"Akun Utama",t:"Personal",b:0}];S.trades.forEach(function(t){if(!t.a)t.a=S.accts[0].id})}
 function save(){try{localStorage.setItem("rt1",JSON.stringify(S))}catch(e){}}
 function ds(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
@@ -126,69 +128,80 @@ function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;
 function $(i){return document.getElementById(i)}
 function fmt(v,u){var s=(v>0?"+":v<0?"−":"")+(u=="r"?Math.abs(v).toFixed(2).replace(/\.?0+$/,"")+"R":"$"+Math.abs(v).toFixed(2).replace(/\.00$/,""));return s}
 function cls(v){return v>0?"pos":v<0?"neg":""}
+var EN={"Beranda":"Home","Jurnal":"Journal","Perpustakaan":"Library","Berita":"News","Rekap":"Recap","Nama Kamu":"Your Name","Tempat aku mencatat setiap trade, menyimpan catatan, dan mengevaluasi hasilnya.":"This is where I journal every trade, keep my notes, and review my results.","Ganti foto":"Change photo","Kosongkan jurnal":"Clear journal","Yakin? Ketuk lagi":"Sure? Tap again","Reset posisi":"Reset position","Portofolio":"Portfolio","Total saldo":"Total balance","Belum ada akun.":"No accounts yet.","Selamat datang kembali,":"Welcome back,","Akun Kamu":"Your Accounts","Pilih akun untuk mulai mencatat trade.":"Select an account to start journaling your trades.","Saldo awal · kini":"Starting balance · now","Tambah akun":"Add account","Nama akun, mis. FundedNext":"Account name, e.g. FundedNext","Saldo awal ($)":"Starting balance ($)","‹ Akun":"‹ Accounts","Saldo":"Balance","Pair, mis. XAUUSD":"Pair, e.g. XAUUSD","Hasil (R)":"Result (R)","Hasil ($)":"Result ($)","Confluences (pisah dengan koma)":"Confluences (comma separated)","Alasan entry: setup, konfirmasi, kenapa masuk di level ini?":"Entry reason: setup, confirmation, why enter at this level?","Simpan trade":"Save trade","Belum ada trade di akun ini.":"No trades in this account yet.","Hapus?":"Delete?","Hapus":"Delete","Hapus akun":"Delete account","Isi nama akun.":"Enter an account name.","Isi tanggal, pair, dan hasil dalam R.":"Fill in date, pair, and result in R.","Catatan, setup, dan referensi yang kamu simpan.":"Notes, setups, and references you save.","Judul":"Title","Isi catatan":"Note","Simpan catatan":"Save note","Cari judul, tag, atau isi":"Search title, tag, or note","Tidak ada yang cocok.":"No matches.","Belum ada catatan. Tambahkan setup atau aturan trading pertamamu.":"No notes yet. Add your first setup or trading rule.","Isi judul catatan.":"Enter a note title.","Tambahkan berita high-impact yang kamu pantau. Waktu mengikuti jam perangkatmu.":"Add the high-impact news you follow. Times follow your device clock.","Berita berikutnya":"Next news","Belum ada berita terjadwal":"No scheduled news","Nama berita, mis. USD CPI":"News name, e.g. USD CPI","Tambah berita":"Add news","Belum ada berita. Tambahkan jadwal CPI, NFP, atau suku bunga.":"No news yet. Add CPI, NFP, or rate decision schedules.","lewat":"past","Isi nama berita dan waktunya.":"Enter the news name and time.","Laporan mingguan dari jurnalmu.":"Weekly report from your journal.","Ganti tema":"Toggle theme","Laporan mingguan":"Weekly report","hari hijau":"green days","trade":"trades","Pergerakan":"Trajectory","Grafik kumulatif mingguan":"Cumulative weekly chart","Hari:":"Days:","Min":"Sun","Sen":"Mon","Sel":"Tue","Rab":"Wed","Kam":"Thu","Jum":"Fri","Sab":"Sat"};
+function L(s){return LG=="en"&&EN[s]?EN[s]:s}
+function LC(){return LG=="en"?"en-US":"id-ID"}
+var CAP=[];
+function cap(){var w=document.createTreeWalker($("home").parentNode,NodeFilter.SHOW_TEXT),n,k;while(n=w.nextNode()){k=n.nodeValue.trim();if(EN[k])CAP.push([n,n.nodeValue,k])}document.querySelectorAll("[placeholder]").forEach(function(e){var k=e.getAttribute("placeholder");if(EN[k])CAP.push([e,k])})}
+function sl(){var en=LG=="en";CAP.forEach(function(c){if(c.length>2)c[0].nodeValue=en?c[1].replace(c[2],EN[c[2]]):c[1];else c[0].setAttribute("placeholder",en?EN[c[1]]:c[1])})}
+function setLang(){LG=S.lang||"id";document.documentElement.lang=LG;$("lang").classList.toggle("en",LG=="en");$("lang").setAttribute("aria-checked",LG=="en");sl();nav();draw()}
 var tabs=[["home","Beranda"],["journal","Jurnal"],["library","Perpustakaan"],["news","Berita"],["recap","Rekap"]];
-function nav(){$("nav").innerHTML=tabs.map(function(t){return'<button data-t="'+t[0]+'" class="'+(t[0]==tab?"on":"")+'">'+t[1]+"</button>"}).join("");
+function nav(){$("nav").innerHTML=tabs.map(function(t){return'<button data-t="'+t[0]+'" class="'+(t[0]==tab?"on":"")+'">'+L(t[1])+"</button>"}).join("");
 document.querySelectorAll("section").forEach(function(s){s.classList.toggle("on",s.id==tab)});
 if(location.hash.slice(1)!=tab)history.replaceState(null,"","#"+tab)}
 $("nav").onclick=function(e){var t=e.target.dataset.t;if(t){tab=t;nav();draw()}};
 function weekSum(o){var m=mon(o),days=[];for(var i=0;i<5;i++){var d=new Date(m);d.setDate(d.getDate()+i);days.push({k:ds(d),l:["Sen","Sel","Rab","Kam","Jum"][i],r:0,u:0,n:0})}
 S.trades.forEach(function(t){days.forEach(function(d){if(d.k==t.d){d.r+=t.r;d.u+=t.u;d.n++}})});return{m:m,days:days}}
-function drawHome(){$("nm").textContent=S.name;$("tg").textContent=S.tag;$("ph").hidden=!S.photo;if(S.photo&&$("ph").getAttribute("src")!=S.photo)$("ph").src=S.photo;var w=weekSum(0),r=0,n=0;w.days.forEach(function(d){r+=d.r;n+=d.n});$("hw").textContent=fmt(r,"r");$("hw").className="count "+cls(r);$("hs").textContent=n+" trade minggu ini"}
-function ed(id,key,max,up){var el=$(id);el.onkeydown=function(e){if(e.key=="Enter"){e.preventDefault();el.blur()}};el.onpaste=function(e){e.preventDefault();document.execCommand("insertText",false,(e.clipboardData.getData("text")||"").replace(/\n/g," "))};el.onblur=function(){var v=el.textContent.trim().slice(0,max);if(up)v=v.toUpperCase();if(v)S[key]=v;save();drawHome()}}
+function drawHome(){$("nm").textContent=S.name==DN?L(DN):S.name;$("tg").textContent=S.tag==DT?L(DT):S.tag;$("ph").hidden=!S.photo;if(S.photo&&$("ph").getAttribute("src")!=S.photo)$("ph").src=S.photo;drawP()}
+function sg(v){return(v>0?"+":"")+mny(v)}
+function drawP(){var s0=0,s1=0;S.accts.forEach(function(a){s0+=a.b;s1+=bal(a)});var p=s1-s0,r=s0>0?p/s0*100:null;
+$("pt").innerHTML='<div class="mut">'+L("Portofolio")+'</div><div class="count">'+mny(s1)+'</div><div class="mut">'+L("Total saldo")+' · <span class="'+cls(p)+'">'+sg(p)+(r===null?"":" ("+(r>0?"+":r<0?"−":"")+Math.abs(r).toFixed(1)+"%)")+"</span></div>"+
+(S.accts.length?S.accts.map(function(a){var v=bal(a),d=v-a.b;return'<div class="item"><div style="min-width:0"><b>'+esc(a.n)+'</b><div class="mut">'+esc(a.t)+'</div></div><div style="text-align:right">'+mny(v)+'<div class="'+cls(d)+'" style="font-size:13px">'+sg(d)+"</div></div></div>"}).join(""):'<p class="mut">'+L("Belum ada akun.")+"</p>")}
+function ed(id,key,max,up){var el=$(id);el.onkeydown=function(e){if(e.key=="Enter"){e.preventDefault();el.blur()}};el.onpaste=function(e){e.preventDefault();document.execCommand("insertText",false,(e.clipboardData.getData("text")||"").replace(/\n/g," "))};el.onblur=function(){var v=el.textContent.trim().slice(0,max);if(up)v=v.toUpperCase();if(v&&v!=L({name:DN,tag:DT}[key]))S[key]=v;save();drawHome()}}
 ed("nm","name",40);ed("tg","tag",160);
 function toast(m){var t=$("ts");if(!t){t=document.createElement("div");t.id="ts";t.style.cssText="position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:13px;z-index:20";document.body.appendChild(t)}t.textContent=m;t.hidden=false;clearTimeout(t._h);t._h=setTimeout(function(){t.hidden=true},2500)}
 
 
 $("pb").onclick=function(){$("pf").click()};
 $("pf").onchange=function(){var f=this.files[0];if(!f)return;var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var c=document.createElement("canvas"),s=Math.min(1,800/Math.max(im.width,im.height));c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);S.photo=c.toDataURL("image/jpeg",.8);URL.revokeObjectURL(u);S.pos.ph=null;FL.ph.fx=.5;FL.ph.fy=.5;FL.ph.init=0;save();drawHome()};im.src=u};
-$("rs").onclick=function(){var b=this;if(b.dataset.s){S.trades=[];save();draw();delete b.dataset.s;b.textContent="Kosongkan jurnal"}else{b.dataset.s=1;b.textContent="Yakin? Ketuk lagi";setTimeout(function(){delete b.dataset.s;b.textContent="Kosongkan jurnal"},3000)}};
+$("rs").onclick=function(){var b=this,t=b.firstChild;if(b.dataset.s){S.trades=[];save();draw();delete b.dataset.s;t.nodeValue=L("Kosongkan jurnal")}else{b.dataset.s=1;t.nodeValue=L("Yakin? Ketuk lagi");setTimeout(function(){delete b.dataset.s;t.nodeValue=L("Kosongkan jurnal")},3000)}};
 function bal(a){var v=a.b;S.trades.forEach(function(t){if(t.a==a.id)v+=t.u});return v}
 function mny(v){return(v<0?"−$":"$")+Math.abs(v).toLocaleString("en-US",{maximumFractionDigits:2})}
 function O(a,p){return'<option value="">'+p+"</option>"+a.map(function(x){return"<option>"+x+"</option>"}).join("")}
 function tgx(x,c){return x?'<span class="tag'+(c?" "+c:"")+'">'+esc(x)+"</span>":""}
-function dn(d){return new Date(d+"T12:00:00").toLocaleDateString("id-ID",{weekday:"long"})}
+function dn(d){return new Date(d+"T12:00:00").toLocaleDateString(LC(),{weekday:"long"})}
 function inf(t){var a=[];if(t.m)a.push("Model: "+esc(t.m));if(t.em)a.push("Entry: "+esc(t.em));if(t.pl)a.push("Place: "+esc(t.pl));return a.length?'<div class="mut" style="margin-top:4px">'+a.join(" · ")+"</div>":""}
 function drawJ(){var a=S.accts.filter(function(x){return x.id==cur})[0],h="";
-if(!a){cur=null;h='<div class="mut">Selamat datang kembali, '+esc(S.name.split(" ")[0])+'</div><h2>Akun Kamu</h2><p class="sub">Pilih akun untuk mulai mencatat trade.</p><div class="ag">'+S.accts.map(function(x){var v=bal(x);return'<div class="ac" data-o="'+x.id+'"><span class="kt">'+esc(x.t)+'</span><button class="x" data-d="'+x.id+'" aria-label="Hapus akun">×</button><b>'+esc(x.n)+'</b><div class="am">'+mny(x.b)+'</div><div class="mut">Saldo awal · kini <span class="'+cls(v-x.b)+'">'+mny(v)+"</span></div></div>"}).join("")+'</div><div class="card"><div class="mut">Tambah akun</div><div class="row"><input id="an" placeholder="Nama akun, mis. FundedNext"><select id="at"><option>Funded</option><option>Personal</option><option>Demo</option></select></div><div class="row"><input id="ab" type="number" step="0.01" placeholder="Saldo awal ($)"></div><button class="btn" data-a="add">Tambah akun</button></div>'}
-else{var L=S.trades.filter(function(t){return t.a==a.id}).sort(function(x,y){return y.d>x.d?1:-1});
-h='<button class="btn ghost" data-a="back">‹ Akun</button><h2>'+esc(a.n)+'</h2><p class="sub">'+esc(a.t)+" · Saldo "+mny(bal(a))+'</p><div class="card"><div class="row"><input type="date" id="jd" value="'+ds(new Date())+'"><input id="jp" placeholder="Pair, mis. XAUUSD"></div><div class="row"><select id="jdr">'+O(["Long","Short"],"Direction")+'</select><select id="jbi">'+O(["Bullish","Bearish","Neutral"],"Bias")+'</select></div><div class="row"><select id="jse">'+O(["Asia","London","New York"],"Session")+'</select><select id="jtf">'+O(["M1","M5","M15","M30","H1","H4","D1"],"Entry TF")+'</select></div><div class="row"><input id="jr" type="number" step="0.01" placeholder="Hasil (R)"><input id="ju" type="number" step="0.01" placeholder="Hasil ($)"></div><div class="row"><input id="jm" placeholder="Model"><input id="je" placeholder="Entry Model"></div><div class="row"><input id="jc" placeholder="Confluences (pisah dengan koma)"><input id="jl" placeholder="Place"></div><div class="row"><textarea id="jx" rows="3" placeholder="Alasan entry: setup, konfirmasi, kenapa masuk di level ini?"></textarea></div><button class="btn" data-a="save">Simpan trade</button></div>'+
-(L.length?'<div class="card">'+L.map(function(t){return'<div class="item"><div style="min-width:0"><b>'+esc(t.p)+'</b><div class="mut">'+t.d+" · "+dn(t.d)+'</div><div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">'+tgx(t.dir)+tgx(t.r>0?"Win":t.r<0?"Loss":"BE",t.r>0?"pos":t.r<0?"neg":"")+tgx(t.bi)+tgx(t.se)+tgx(t.tf)+(t.cf||"").split(",").map(function(z){return tgx(z.trim())}).join("")+"</div>"+inf(t)+(t.x?'<div class="mut" style="white-space:pre-wrap;margin-top:4px">'+esc(t.x)+"</div>":"")+'</div><div style="text-align:right" class="'+cls(t.r)+'">'+fmt(t.r,"r")+'<div class="mut">'+fmt(t.u,"u")+'</div></div><button class="x" data-t="'+t.id+'" aria-label="Hapus">×</button></div>'}).join("")+"</div>":'<p class="mut">Belum ada trade di akun ini.</p>')}
+if(!a){cur=null;h='<div class="mut">'+L("Selamat datang kembali,")+(S.name==DN?"":" "+esc(S.name.split(" ")[0]))+'</div><h2>'+L("Akun Kamu")+'</h2><p class="sub">'+L("Pilih akun untuk mulai mencatat trade.")+'</p><div class="ag">'+S.accts.map(function(x){var v=bal(x);return'<div class="ac" data-o="'+x.id+'"><span class="kt">'+esc(x.t)+'</span><button class="x" data-d="'+x.id+'" aria-label="'+L("Hapus akun")+'">×</button><b>'+esc(x.n)+'</b><div class="am">'+mny(x.b)+'</div><div class="mut">'+L("Saldo awal · kini")+' <span class="'+cls(v-x.b)+'">'+mny(v)+"</span></div></div>"}).join("")+'</div><div class="card"><div class="mut">'+L("Tambah akun")+'</div><div class="row"><input id="an" placeholder="'+L("Nama akun, mis. FundedNext")+'"><select id="at"><option>Funded</option><option>Personal</option><option>Demo</option></select></div><div class="row"><input id="ab" type="number" step="0.01" placeholder="'+L("Saldo awal ($)")+'"></div><button class="btn" data-a="add">'+L("Tambah akun")+'</button></div>'}
+else{var LT=S.trades.filter(function(t){return t.a==a.id}).sort(function(x,y){return y.d>x.d?1:-1});
+h='<button class="btn ghost" data-a="back">'+L("‹ Akun")+'</button><h2>'+esc(a.n)+'</h2><p class="sub">'+esc(a.t)+" · "+L("Saldo")+" "+mny(bal(a))+'</p><div class="card"><div class="row"><input type="date" id="jd" value="'+ds(new Date())+'"><input id="jp" placeholder="'+L("Pair, mis. XAUUSD")+'"></div><div class="row"><select id="jdr">'+O(["Long","Short"],"Direction")+'</select><select id="jbi">'+O(["Bullish","Bearish","Neutral"],"Bias")+'</select></div><div class="row"><select id="jse">'+O(["Asia","London","New York"],"Session")+'</select><select id="jtf">'+O(["M1","M5","M15","M30","H1","H4","D1"],"Entry TF")+'</select></div><div class="row"><input id="jr" type="number" step="0.01" placeholder="'+L("Hasil (R)")+'"><input id="ju" type="number" step="0.01" placeholder="'+L("Hasil ($)")+'"></div><div class="row"><input id="jm" placeholder="Model"><input id="je" placeholder="Entry Model"></div><div class="row"><input id="jc" placeholder="'+L("Confluences (pisah dengan koma)")+'"><input id="jl" placeholder="Place"></div><div class="row"><textarea id="jx" rows="3" placeholder="'+L("Alasan entry: setup, konfirmasi, kenapa masuk di level ini?")+'"></textarea></div><button class="btn" data-a="save">'+L("Simpan trade")+'</button></div>'+
+(LT.length?'<div class="card">'+LT.map(function(t){return'<div class="item"><div style="min-width:0"><b>'+esc(t.p)+'</b><div class="mut">'+t.d+" · "+dn(t.d)+'</div><div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">'+tgx(t.dir)+tgx(t.r>0?"Win":t.r<0?"Loss":"BE",t.r>0?"pos":t.r<0?"neg":"")+tgx(t.bi)+tgx(t.se)+tgx(t.tf)+(t.cf||"").split(",").map(function(z){return tgx(z.trim())}).join("")+"</div>"+inf(t)+(t.x?'<div class="mut" style="white-space:pre-wrap;margin-top:4px">'+esc(t.x)+"</div>":"")+'</div><div style="text-align:right" class="'+cls(t.r)+'">'+fmt(t.r,"r")+'<div class="mut">'+fmt(t.u,"u")+'</div></div><button class="x" data-t="'+t.id+'" aria-label="'+L("Hapus")+'">×</button></div>'}).join("")+"</div>":'<p class="mut">'+L("Belum ada trade di akun ini.")+'</p>')}
 $("jv").innerHTML=h}
 $("jv").onclick=function(e){var t=e.target,b;
 if(b=t.closest("[data-a]")){var k=b.dataset.a;
 if(k=="back"){cur=null;drawJ()}
-else if(k=="add"){var n=$("an").value.trim();if(!n){toast("Isi nama akun.");return}var bl=parseFloat($("ab").value);S.accts.push({id:Date.now(),n:n,t:$("at").value,b:isNaN(bl)?0:bl});save();drawJ()}
+else if(k=="add"){var n=$("an").value.trim();if(!n){toast(L("Isi nama akun."));return}var bl=parseFloat($("ab").value);S.accts.push({id:Date.now(),n:n,t:$("at").value,b:isNaN(bl)?0:bl});save();drawJ()}
 else if(k=="save"){var d=$("jd").value,p=$("jp").value.trim(),r=parseFloat($("jr").value),u=parseFloat($("ju").value);
-if(!d||!p||isNaN(r)){toast("Isi tanggal, pair, dan hasil dalam R.");return}
+if(!d||!p||isNaN(r)){toast(L("Isi tanggal, pair, dan hasil dalam R."));return}
 var g=function(i){return $(i).value.trim()};S.trades.push({id:Date.now(),a:cur,d:d,p:p,r:r,u:isNaN(u)?0:u,x:g("jx"),dir:g("jdr"),bi:g("jbi"),se:g("jse"),tf:g("jtf"),m:g("jm"),em:g("je"),cf:g("jc"),pl:g("jl")});save();drawJ()}return}
-if(b=t.closest("[data-d]")){var id=b.dataset.d;if(b.dataset.c){S.accts=S.accts.filter(function(x){return x.id!=id});S.trades=S.trades.filter(function(x){return x.a!=id});save();drawJ()}else{b.dataset.c=1;b.textContent="Hapus?";setTimeout(function(){b.textContent="×";delete b.dataset.c},3000)}return}
+if(b=t.closest("[data-d]")){var id=b.dataset.d;if(b.dataset.c){S.accts=S.accts.filter(function(x){return x.id!=id});S.trades=S.trades.filter(function(x){return x.a!=id});save();drawJ()}else{b.dataset.c=1;b.textContent=L("Hapus?");setTimeout(function(){b.textContent="×";delete b.dataset.c},3000)}return}
 if(b=t.closest("[data-t]")){var tid=b.dataset.t;S.trades=S.trades.filter(function(x){return x.id!=tid});save();drawJ();return}
 if(b=t.closest("[data-o]")){cur=+b.dataset.o;drawJ();scrollTo(0,0)}};
 function drawL(){var q=$("ls").value.toLowerCase(),a=S.lib.filter(function(x){return(x.t+x.g+x.x).toLowerCase().indexOf(q)>-1});
-$("ll").innerHTML=a.length?a.map(function(x){return'<div class="card"><div class="item" style="padding-top:0"><b>'+esc(x.t)+'</b><button class="x" data-del="'+x.id+'" aria-label="Hapus">×</button></div>'+(x.g?'<span class="tag">'+esc(x.g)+"</span>":"")+'<p style="white-space:pre-wrap;margin:8px 0 0">'+esc(x.x)+"</p></div>"}).join(""):'<p class="mut">'+(S.lib.length?"Tidak ada yang cocok.":"Belum ada catatan. Tambahkan setup atau aturan trading pertamamu.")+"</p>"}
-$("la").onclick=function(){var t=$("lt").value.trim();if(!t){toast("Isi judul catatan.");return}
+$("ll").innerHTML=a.length?a.map(function(x){return'<div class="card"><div class="item" style="padding-top:0"><b>'+esc(x.t)+'</b><button class="x" data-del="'+x.id+'" aria-label="'+L("Hapus")+'">×</button></div>'+(x.g?'<span class="tag">'+esc(x.g)+"</span>":"")+'<p style="white-space:pre-wrap;margin:8px 0 0">'+esc(x.x)+"</p></div>"}).join(""):'<p class="mut">'+L(S.lib.length?"Tidak ada yang cocok.":"Belum ada catatan. Tambahkan setup atau aturan trading pertamamu.")+"</p>"}
+$("la").onclick=function(){var t=$("lt").value.trim();if(!t){toast(L("Isi judul catatan."));return}
 S.lib.unshift({id:Date.now(),t:t,g:$("lg").value.trim(),x:$("lx").value});save();["lt","lg","lx"].forEach(function(i){$(i).value=""});drawL()};
 $("ls").oninput=drawL;
 $("ll").onclick=function(e){var id=e.target.dataset.del;if(id){S.lib=S.lib.filter(function(x){return x.id!=id});save();drawL()}};
 function drawN(){var now=Date.now(),a=S.news.slice().sort(function(x,y){return x.t-y.t});
-$("nl").innerHTML=a.length?'<div class="card">'+a.map(function(n){var d=new Date(n.t);return'<div class="item"><div><b>'+esc(n.e)+'</b><div class="mut">'+d.toLocaleString("id-ID",{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})+(n.t<now?" · lewat":"")+'</div></div><button class="x" data-del="'+n.id+'" aria-label="Hapus">×</button></div>'}).join("")+"</div>":'<p class="mut">Belum ada berita. Tambahkan jadwal CPI, NFP, atau suku bunga.</p>';tick()}
-function tick(){var nx=S.news.filter(function(n){return n.t>Date.now()}).sort(function(a,b){return a.t-b.t})[0];if(!nx){$("cd").textContent="--:--:--";$("cn").textContent="Belum ada berita terjadwal";return}
+$("nl").innerHTML=a.length?'<div class="card">'+a.map(function(n){var d=new Date(n.t);return'<div class="item"><div><b>'+esc(n.e)+'</b><div class="mut">'+d.toLocaleString(LC(),{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})+(n.t<now?" · "+L("lewat"):"")+'</div></div><button class="x" data-del="'+n.id+'" aria-label="'+L("Hapus")+'">×</button></div>'}).join("")+"</div>":'<p class="mut">'+L("Belum ada berita. Tambahkan jadwal CPI, NFP, atau suku bunga.")+'</p>';tick()}
+function tick(){var nx=S.news.filter(function(n){return n.t>Date.now()}).sort(function(a,b){return a.t-b.t})[0];if(!nx){$("cd").textContent="--:--:--";$("cn").textContent=L("Belum ada berita terjadwal");return}
 var s=Math.floor((nx.t-Date.now())/1000),d=Math.floor(s/86400);s%=86400;var p=function(n){return String(n).padStart(2,"0")};
 $("cd").textContent=(d?d+"h ":"")+p(Math.floor(s/3600))+":"+p(Math.floor(s%3600/60))+":"+p(s%60);$("cn").textContent=nx.e}
 setInterval(function(){if(tab=="news")tick()},1000);
-$("na").onclick=function(){var e=$("ne").value.trim(),t=new Date($("nt").value).getTime();if(!e||isNaN(t)){toast("Isi nama berita dan waktunya.");return}
+$("na").onclick=function(){var e=$("ne").value.trim(),t=new Date($("nt").value).getTime();if(!e||isNaN(t)){toast(L("Isi nama berita dan waktunya."));return}
 S.news.push({id:Date.now(),e:e,t:t});save();$("ne").value="";drawN()};
 $("nl").onclick=function(e){var id=e.target.dataset.del;if(id){S.news=S.news.filter(function(n){return n.id!=id});save();drawN()}};
 function drawR(){var w=weekSum(off),k=unit=="r"?"r":"u",tot=0,n=0,wins=0,g=0,best=null,mx=0;
 w.days.forEach(function(d){tot+=d[k];n+=d.n;if(d[k]>0)g++;if(best===null||d[k]>best)best=d[k];mx=Math.max(mx,Math.abs(d[k]))});
 S.trades.forEach(function(t){var m=ds(w.m);var e=new Date(w.m);e.setDate(e.getDate()+4);if(t.d>=m&&t.d<=ds(e)&&t.r>0)wins++});
-var e=new Date(w.m);e.setDate(e.getDate()+4);var f=function(d){return d.toLocaleDateString("id-ID",{day:"numeric",month:"short"})};$("rg").textContent=f(w.m)+" – "+f(e);
+var e=new Date(w.m);e.setDate(e.getDate()+4);var f=function(d){return d.toLocaleDateString(LC(),{day:"numeric",month:"short"})};$("rg").textContent=f(w.m)+" – "+f(e);
 var c=0,pts=w.days.map(function(d,i){c+=d[k];return[i,c]}),lo=Math.min(0,Math.min.apply(null,pts.map(function(p){return p[1]}))),hi=Math.max(1,Math.max.apply(null,pts.map(function(p){return p[1]}))),
 X=function(i){return 10+i*70},Y=function(v){return 90-(v-lo)/(hi-lo||1)*80},path=pts.map(function(p,i){return(i?"L":"M")+X(p[0])+" "+Y(p[1])}).join(" ");
-$("rc").innerHTML='<div class="mut">Laporan mingguan</div><div class="count '+cls(tot)+'" style="font-size:56px">'+fmt(tot,unit)+'</div>'+
-'<div class="stats"><div><b>'+g+" / 5</b><span class=mut>hari hijau</span></div><div><b>"+n+"</b><span class=mut>trade</span></div><div><b>"+(n?Math.round(wins/n*100):0)+"%</b><span class=mut>win rate</span></div></div>"+
-w.days.map(function(d){var v=d[k];return'<div class="drow"><b>'+d.l+'</b><div class="bar"><i class="'+(v<0?"n":"")+'" style="width:'+(mx?Math.abs(v)/mx*100:0)+'%"></i></div><span class="'+cls(v)+'">'+(d.n?fmt(v,unit):"–")+"</span></div>"}).join("")+
-'<div class="mut" style="margin-top:14px">Pergerakan</div><svg viewBox="0 0 290 100" width="100%" role="img" aria-label="Grafik kumulatif mingguan"><line x1="10" x2="280" y1="'+Y(0)+'" y2="'+Y(0)+'" stroke="var(--line)"/><path d="'+path+'" fill="none" stroke="var(--acc)" stroke-width="2.5" stroke-linejoin="round"/>'+pts.map(function(p){return'<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="3" fill="var(--acc)"/>'}).join("")+"</svg>";
+$("rc").innerHTML='<div class="mut">'+L("Laporan mingguan")+'</div><div class="count '+cls(tot)+'" style="font-size:56px">'+fmt(tot,unit)+'</div>'+
+'<div class="stats"><div><b>'+g+" / 5</b><span class=mut>"+L("hari hijau")+"</span></div><div><b>"+n+"</b><span class=mut>"+L("trade")+"</span></div><div><b>"+(n?Math.round(wins/n*100):0)+"%</b><span class=mut>win rate</span></div></div>"+
+w.days.map(function(d){var v=d[k];return'<div class="drow"><b>'+L(d.l)+'</b><div class="bar"><i class="'+(v<0?"n":"")+'" style="width:'+(mx?Math.abs(v)/mx*100:0)+'%"></i></div><span class="'+cls(v)+'">'+(d.n?fmt(v,unit):"–")+"</span></div>"}).join("")+
+'<div class="mut" style="margin-top:14px">'+L("Pergerakan")+'</div><svg viewBox="0 0 290 100" width="100%" role="img" aria-label="'+L("Grafik kumulatif mingguan")+'"><line x1="10" x2="280" y1="'+Y(0)+'" y2="'+Y(0)+'" stroke="var(--line)"/><path d="'+path+'" fill="none" stroke="var(--acc)" stroke-width="2.5" stroke-linejoin="round"/>'+pts.map(function(p){return'<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="3" fill="var(--acc)"/>'}).join("")+"</svg>";
 $("uR").classList.toggle("on",unit=="r");$("uD").classList.toggle("on",unit=="u");drawC()}
 $("pv").onclick=function(){off--;drawR()};$("nx").onclick=function(){off++;drawR()};
 $("uR").onclick=function(){unit="r";drawR()};$("uD").onclick=function(){unit="u";drawR()};
@@ -197,11 +210,11 @@ function cf(v,u){var a=Math.abs(v);return u=="r"?a.toFixed(1).replace(/\.0$/,"")
 function drawC(){var d0=new Date();d0.setHours(12,0,0,0);d0.setDate(1);d0.setMonth(d0.getMonth()+moff);var y=d0.getFullYear(),m=d0.getMonth(),k=unit=="r"?"r":"u",dim=new Date(y,m+1,0).getDate(),st=d0.getDay(),pre=y+"-"+String(m+1).padStart(2,"0")+"-",map={},tot=0,days=0,today=ds(new Date());
 S.trades.forEach(function(t){if(t.d.indexOf(pre)==0){var e=map[t.d]||(map[t.d]={n:0,v:0});e.n++;e.v+=t[k]}});
 Object.keys(map).forEach(function(z){tot+=map[z].v;days++});
-var h=["Min","Sen","Sel","Rab","Kam","Jum","Sab"].map(function(n){return'<div class="wd">'+n+"</div>"}).join("");
+var h=["Min","Sen","Sel","Rab","Kam","Jum","Sab"].map(function(n){return'<div class="wd">'+L(n)+"</div>"}).join("");
 for(var i=0;i<st;i++)h+="<i></i>";
 for(var d=1;d<=dim;d++){var key=pre+String(d).padStart(2,"0"),e=map[key];
 h+='<div class="cd'+(e?(e.v>0?" w":e.v<0?" l":""):"")+(key==today?" td":"")+'"><b>'+d+"</b>"+(e?"<small>"+e.n+" ⇆</small><span class=\""+cls(e.v)+"\">"+cf(e.v,unit)+"</span>":"")+"</div>"}
-$("cal").innerHTML='<div class="row" style="align-items:center"><button class="btn ghost" id="cp">‹</button><b style="flex:1;text-align:center">'+d0.toLocaleDateString("id-ID",{month:"long",year:"numeric"})+'</b><button class="btn ghost" id="cq">›</button></div><div class="pill"><span>PnL: <b class="'+cls(tot)+'">'+fmt(tot,unit)+'</b></span><span class="mut">|</span><span>Hari: <b>'+days+'</b></span></div><div class="cg">'+h+"</div>";
+$("cal").innerHTML='<div class="row" style="align-items:center"><button class="btn ghost" id="cp">‹</button><b style="flex:1;text-align:center">'+d0.toLocaleDateString(LC(),{month:"long",year:"numeric"})+'</b><button class="btn ghost" id="cq">›</button></div><div class="pill"><span>PnL: <b class="'+cls(tot)+'">'+fmt(tot,unit)+'</b></span><span class="mut">|</span><span>'+L("Hari:")+' <b>'+days+'</b></span></div><div class="cg">'+h+"</div>";
 $("cp").onclick=function(){moff--;drawC()};$("cq").onclick=function(){moff++;drawC()}}
 function q(r,c){var f=function(a,b){var x=r-a,y=c-b;if(x<0||y<0||x>6||y>6)return-1;return x==0||x==6||y==0||y==6||(x>=2&&x<=4&&y>=2&&y<=4)?1:0},v=f(0,0);if(v<0)v=f(0,14);if(v<0)v=f(14,0);if(v>=0)return v;
 if((r<=7&&c<=7)||(r<=7&&c>=13)||(r>=13&&c<=7)||(r>=7&&r<=13&&c>=7&&c<=13))return 0;
@@ -222,13 +235,14 @@ el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up)}
 function loop(t){requestAnimationFrame(loop);if(tab!="home")return;for(var k in FL){var o=FL[k],e=o.el;if(e.hidden||(k=="ph"&&!e.naturalWidth))continue;o.w=Math.max(0,o.bx.clientWidth-e.offsetWidth);o.h=Math.max(0,o.bx.clientHeight-e.offsetHeight);
 if(!o.init){o.x=o.fx*o.w;o.y=o.fy*o.h;o.init=1}
 if(o.dn){o.vx*=.85;o.vy*=.85}else{o.x+=o.vx;o.y+=o.vy;o.vx*=.95;o.vy*=.95;if(o.x<0||o.x>o.w)o.vx*=-.5;if(o.y<0||o.y>o.h)o.vy*=-.5;if(Math.abs(o.vx)<.02)o.vx=0;if(Math.abs(o.vy)<.02)o.vy=0;clp(o)}
-o.rot+=(Math.max(-9,Math.min(9,o.vx*1.4))-o.rot)*.12;var s=t/1000+o.ph;
-e.style.transform="translate("+(o.x+Math.sin(s*.9)*3).toFixed(1)+"px,"+(o.y+Math.cos(s*1.2)*5).toFixed(1)+"px) rotate("+o.rot.toFixed(2)+"deg)"}}
+o.rot+=(Math.max(-9,Math.min(9,o.vx*1.4))-o.rot)*.12;var s=t/1000+o.ph,a=k=="lg"?0:1;
+e.style.transform="translate("+(o.x+Math.sin(s*.9)*3*a).toFixed(1)+"px,"+(o.y+Math.cos(s*1.2)*5*a).toFixed(1)+"px) rotate("+o.rot.toFixed(2)+"deg)"}}
 fl("ph","hero","ph",.5,.5);fl("lgw","home","lg",0,0);requestAnimationFrame(loop);
+$("lang").onclick=function(){S.lang=LG=="en"?"id":"en";save();setLang()};
 $("rp").onclick=function(){S.pos={};for(var k in FL){var o=FL[k];o.fx=k=="ph"?.5:0;o.fy=k=="ph"?.5:0;o.init=0;o.vx=0;o.vy=0}save()};
 function draw(){drawHome();drawJ();drawL();drawN();drawR()}
-load();var h=location.hash.slice(1);if(tabs.some(function(t){return t[0]==h}))tab=h;
-nav();draw();
+cap();load();var h=location.hash.slice(1);if(tabs.some(function(t){return t[0]==h}))tab=h;
+setLang();
 addEventListener("hashchange",function(){var h=location.hash.slice(1);if(tabs.some(function(t){return t[0]==h})){tab=h;nav()}});
 </script>
 </body>
