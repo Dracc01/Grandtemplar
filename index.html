@@ -12,9 +12,11 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 "Instrument Sans","Helvetica Neue",Arial,sans-serif;min-height:100vh;background-image:radial-gradient(ellipse at 50% 0,var(--glow),transparent 60%)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;display:flex;gap:2px;width:max-content;max-width:calc(100% - 24px);margin:10px auto;padding:4px;border:1px solid var(--line);border-radius:99px;background:color-mix(in srgb,var(--card) 85%,transparent);backdrop-filter:blur(10px);overflow-x:auto}
-nav button{border:0;background:none;color:var(--mut);font:inherit;font-size:13px;padding:6px 12px;border-radius:99px;cursor:pointer;white-space:nowrap}
-nav button.on{background:var(--fg);color:var(--bg)}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;display:flex;align-items:center;gap:4px;width:max-content;max-width:calc(100% - 16px);margin:10px auto;padding:4px;border:1px solid var(--line);border-radius:99px;background:color-mix(in srgb,var(--card) 85%,transparent);backdrop-filter:blur(10px)}
+#tb{display:flex;gap:1px;overflow-x:auto;min-width:0;scrollbar-width:none}#tb::-webkit-scrollbar{display:none}
+#tb button{border:0;background:none;color:var(--mut);font:inherit;font-size:clamp(10px,3vw,12px);padding:7px clamp(4px,1.6vw,9px);border-radius:99px;cursor:pointer;white-space:nowrap}
+#tb button.on{background:var(--fg);color:var(--bg)}
+.tm{flex:none;width:clamp(30px,9vw,36px);height:clamp(30px,9vw,36px);border-radius:50%;border:1px solid var(--line);padding:2px;background:none;cursor:pointer;display:block}.tm>*{display:block;width:100%;height:100%;border-radius:50%}
 main{max-width:560px;margin:0 auto;padding:12px 18px 60px;position:relative;z-index:1}
 h1{font-size:40px;line-height:1.05;margin:24px 0 8px;font-weight:600;letter-spacing:-.02em}
 h2{font-size:28px;margin:18px 0 4px;font-weight:600;letter-spacing:-.01em}
@@ -25,7 +27,6 @@ h2{font-size:28px;margin:18px 0 4px;font-weight:600;letter-spacing:-.01em}
 .name,.ed{cursor:text;border-bottom:1px dashed var(--line)}.ph{position:absolute;left:0;top:0;width:min(72%,340px);max-height:440px;object-fit:cover;z-index:3;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;will-change:transform;filter:grayscale(1) contrast(1.05);-webkit-mask-image:radial-gradient(ellipse 60% 60% at 50% 45%,#000 50%,transparent 100%);mask-image:radial-gradient(ellipse 60% 60% at 50% 45%,#000 50%,transparent 100%)}.ph[hidden]{display:none}
 #home{position:relative}[contenteditable]{outline:none}
 .lgw{position:absolute;left:0;top:0;z-index:5;width:46px;height:46px;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;will-change:transform}
-.lang{position:absolute;right:0;top:9px;width:54px;height:28px;border-radius:99px;border:1px solid var(--line);background:var(--card);padding:0;cursor:pointer;z-index:5}.lang i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--mut);transition:transform .25s,background .25s}.lang.en i{transform:translateX(26px);background:var(--acc)}
 .rp{position:absolute;width:10px;height:10px;margin:-5px;border-radius:50%;border:1.5px solid var(--acc);opacity:.7;pointer-events:none;animation:rp .9s ease-out forwards;z-index:6}@keyframes rp{to{transform:scale(14);opacity:0}}
 .gl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.th,.add{aspect-ratio:4/3;border-radius:10px}.th{position:relative;overflow:hidden;border:1px solid var(--line);padding:0;background:var(--bg);cursor:pointer}.th img{width:100%;height:100%;object-fit:cover;display:block}.th span{position:absolute;left:0;right:0;bottom:0;padding:14px 8px 5px;font-size:11px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.72));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}.add{border:1px dashed var(--line);background:none;color:var(--mut);font-size:30px;cursor:pointer}
 #vw{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.95);display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 12px env(safe-area-inset-bottom,0px)}#vw[hidden]{display:none}.vb{display:flex;justify-content:flex-end}.vb .x{color:#fff;font-size:30px;padding:8px 12px}.vz{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;min-height:0}.vz img{max-width:100%;max-height:100%}.vz.z{display:block}.vz.z img{width:250%;max-width:none;max-height:none}.vf{display:flex;gap:8px;padding:10px 0}.vf input{flex:1}
@@ -37,6 +38,14 @@ h2{font-size:28px;margin:18px 0 4px;font-weight:600;letter-spacing:-.01em}
 #sp{position:fixed;inset:0;z-index:60;background:radial-gradient(ellipse at 50% 46%,#101312,#050606 70%);display:flex;align-items:center;justify-content:center;overflow:hidden}#sk{width:min(94vw,680px);height:auto;overflow:visible}
 .lt{opacity:0;transform-box:fill-box;transform-origin:50% 100%}.lt path{fill:none;stroke:#eceee9;stroke-width:17;stroke-linecap:round;stroke-linejoin:round}.lt.x path{stroke:#a6f04d}
 #sr{opacity:0;transform-box:fill-box;transform-origin:50% 50%}#rg2{opacity:0;transform-box:fill-box;transform-origin:50% 50%}
+.vc{break-inside:avoid;margin:0 0 10px;border-radius:18px;overflow:hidden;background:var(--card);border:1px solid var(--line);cursor:pointer}
+.vp{position:relative;min-height:130px;background:linear-gradient(135deg,#1a1d1b,#0b0c0b)}.vp img{display:block;width:100%;max-height:300px;object-fit:cover}.vp:after{content:"";position:absolute;inset:auto 0 0 0;height:55%;background:linear-gradient(transparent,rgba(0,0,0,.55));pointer-events:none}
+.pl{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px 0 0 -21px;border-radius:50%;background:rgba(0,0,0,.45);border:1.5px solid rgba(255,255,255,.7);z-index:2}.pl:before{content:"";position:absolute;left:16px;top:12px;border-left:13px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent}
+.vq{padding:12px 14px 14px}.vq p{margin:0;font:italic 400 15px/1.45 Georgia,"Times New Roman",serif;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;white-space:pre-wrap}.vq span{display:block;margin-top:8px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
+#tv{position:fixed;inset:0;z-index:34;background:#050606;color:#eceee9;display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}#tv[hidden]{display:none}#tv .eb .x{color:#8b918c}#tv .eb .x.arm{color:#ff6b5e}
+.tvc{flex:1;overflow:auto;padding:4px 16px 32px;display:flex;flex-direction:column;gap:22px}.tvw{border-radius:22px;overflow:hidden;background:#000;box-shadow:0 22px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.07)}.tvw video{display:block;width:100%;max-height:54vh;background:#000}
+.tvq{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 6px}.qm{font:700 72px/.7 Georgia,serif;color:#a6f04d;height:34px;opacity:.9}
+#tvq{width:100%;font:italic 400 26px/1.42 Georgia,"Times New Roman",serif;color:#eceee9;text-align:center;border:0;background:none;resize:none;padding:6px 0;min-height:110px;flex:none}.nl>p{column-span:all}#tvq,#tva,#et,#etg,#ex{outline:none}.ln{display:block;width:44px;height:2px;background:#a6f04d;border-radius:2px;margin:10px auto 14px;opacity:.8}#tva{width:100%;text-align:center;color:#8b918c;letter-spacing:.2em;text-transform:uppercase;font-size:12px;border:0;background:none;flex:none}
 .ag{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.ac{position:relative;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--card);cursor:pointer}.ac .x{position:absolute;top:6px;right:8px;font-size:15px}.kt{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc)}.ac b{display:block;margin:8px 0 2px}.am{font-size:24px;font-weight:600;color:#4d7cff}
 .pill{display:flex;gap:10px;justify-content:center;margin:12px auto;border:1px solid var(--line);border-radius:12px;padding:8px 14px;width:max-content;max-width:100%;font-size:14px}
 .cg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
@@ -76,20 +85,19 @@ section{display:none}section.on{display:block}
 </head>
 <body>
 <div id="st"></div>
-<nav id="nav"></nav>
+<nav id="nav"><div id="tb"></div><button class="tm" id="tm" aria-label="Ganti tema"></button></nav>
 <main>
 
 <section id="home">
   <div style="height:56px"></div>
   <div class="lgw" id="lgw" title="Tarik logo"><svg id="logo" width="46" height="46" viewBox="0 0 21 21" aria-hidden="true"></svg></div>
-  <button class="lang" id="lang" role="switch" aria-checked="false" aria-label="Bahasa / Language"><i></i></button>
   <h1><span class="name" id="nm" contenteditable="true" spellcheck="false" title="Ketuk untuk ganti nama"></span></h1>
   <p class="sub"><span class="ed" id="tg" contenteditable="true" spellcheck="false" title="Ketuk untuk ganti"></span></p>
   <div class="hero" id="hero">
     <svg class="orb" viewBox="0 0 400 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g transform="rotate(-12 200 380)"><ellipse cx="200" cy="380" rx="270" ry="110" fill="none" stroke="var(--acc)" stroke-opacity=".35"/><ellipse cx="200" cy="380" rx="330" ry="150" fill="none" stroke="var(--fg)" stroke-opacity=".15" stroke-dasharray="2 7"/><circle r="4" fill="var(--acc)"><animateMotion dur="16s" repeatCount="indefinite" path="M-70 380a270 110 0 1 0 540 0a270 110 0 1 0 -540 0"/></circle></g></svg>
     <img class="ph" id="ph" alt="Foto profil" hidden>
   </div>
-  <div class="row"><button class="btn ghost" id="pb">Ganti foto</button><button class="btn ghost" id="rs">Kosongkan jurnal</button><button class="btn ghost" id="rp">Reset posisi</button></div>
+  <div class="row"><button class="btn ghost" id="pb">Ganti foto</button><button class="btn ghost" id="rs">Kosongkan trade</button><button class="btn ghost" id="rp">Reset posisi</button></div>
   <input type="file" id="pf" accept="image/*" hidden>
   <input type="file" id="cf" accept="image/*" multiple hidden>
   <div class="card" id="pt"></div>
@@ -98,7 +106,7 @@ section{display:none}section.on{display:block}
 <section id="journal"><div id="jv"></div></section>
 
 <section id="library">
-  <h2>Catatan</h2>
+  <h2>Jurnal</h2>
   <div class="row"><input id="ls" placeholder="Cari catatan"></div>
   <div class="chs" id="lc"></div>
   <div class="nl" id="ll"></div>
@@ -116,11 +124,18 @@ section{display:none}section.on{display:block}
 </section>
 
 <section id="recap">
-  <h2>Rekap</h2><p class="sub">Laporan mingguan dari jurnalmu.</p>
+  <h2>Rekap</h2><p class="sub">Laporan mingguan dari trade kamu.</p>
   <div class="row"><button class="btn ghost" id="pv">‹</button><span class="mut" id="rg" style="align-self:center;flex:1;text-align:center"></span><button class="btn ghost" id="nx">›</button></div>
-  <div class="row"><button class="btn ghost on" id="uR">R</button><button class="btn ghost" id="uD">$</button><button class="btn ghost" id="th">Ganti tema</button></div>
+  <div class="row"><button class="btn ghost on" id="uR">R</button><button class="btn ghost" id="uD">$</button></div>
   <div class="card" id="rc"></div>
   <div class="card" id="cal"></div>
+</section>
+
+<section id="timeless">
+  <h2>Abadi</h2><p class="sub">Video dan kata-kata yang membuatmu tetap jalan.</p>
+  <div class="nl" id="tlist"></div>
+  <button class="fab" id="tfab" aria-label="Tambah video">+</button>
+  <input type="file" id="tfile" accept="video/*" hidden>
 </section>
 
 </main>
@@ -133,14 +148,19 @@ section{display:none}section.on{display:block}
   <div class="ec"><div id="eps"></div><input id="et" maxlength="120" placeholder="Judul"><input id="etg" maxlength="30" list="tl" placeholder="Tag"><datalist id="tl"></datalist><textarea id="ex" placeholder="Tulis sesuatu…"></textarea><div class="mut" id="edt"></div></div>
   <input type="file" id="ef" accept="image/*" multiple hidden>
 </div>
+<div id="tv" hidden>
+  <div class="eb"><button class="x" id="tvk" aria-label="Kembali">‹</button><span class="sp"></span><button class="x" id="tvd" aria-label="Hapus"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/></svg></button></div>
+  <div class="tvc"><div class="tvw"><video id="tvv" playsinline controls loop preload="auto"></video></div>
+  <div class="tvq"><span class="qm">“</span><textarea id="tvq" rows="1" maxlength="600" placeholder="Tulis kata-kata yang ingin kamu ingat…"></textarea><i class="ln"></i><input id="tva" maxlength="40" placeholder="Siapa yang mengucapkannya? (opsional)"></div></div>
+</div>
 <div id="sp"><svg id="sk" viewBox="0 0 700 440" aria-hidden="true"><defs><filter id="ink" x="-4%" y="-20%" width="108%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="7" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.2 1.9" result="a"/><feComposite in="SourceGraphic" in2="a" operator="in"/></filter></defs>
 <g id="wd"><g transform="translate(54 150)"><g class="lt"><path d="M84 34C76 18 62 10 46 10C22 10 8 32 8 60S22 110 46 110C62 110 76 102 84 86"/></g></g><g transform="translate(174 150)"><g class="lt"><path d="M46 10C18 10 8 34 8 60S18 110 46 110S84 86 84 60S74 10 46 10Z"/></g></g><g transform="translate(294 150)"><g class="lt"><path d="M10 10V110H38C70 110 86 88 86 60S70 10 38 10Z"/></g></g><g transform="translate(414 150)"><g class="lt"><path d="M82 10H12V110H82M12 60H68"/></g></g><g transform="translate(554 150)"><g class="lt x"><path d="M10 10L82 110M82 10L10 110"/></g></g></g>
 <ellipse id="rg2" cx="350" cy="346" rx="250" ry="42" fill="none" stroke="#cfd2cf" stroke-width="2.5"/>
 <g id="sr" filter="url(#ink)"><rect x="130" y="308" width="440" height="76" rx="13" fill="none" stroke="#d9dcd8" stroke-width="4.5"/><rect x="140" y="318" width="420" height="56" rx="8" fill="none" stroke="#d9dcd8" stroke-width="1.6"/><text x="350" y="357" text-anchor="middle" textLength="350" lengthAdjust="spacingAndGlyphs" fill="#e4e7e3" font-family="'Courier New',ui-monospace,monospace" font-weight="700" font-size="35">grandtemplar.corp</text></g>
 </svg></div>
 <script>
-var DN="Nama Kamu",DT="Tempat aku mencatat setiap trade, menyimpan catatan, dan mengevaluasi hasilnya.",S={name:DN,tag:DT,lang:"id",photo:"",pos:{},certs:[],accts:[],trades:[],lib:[],news:[]},tab="home",off=0,unit="r",moff=0,cur=null,LG="id",BOOT=1;
-function load(){try{var v=localStorage.getItem("rt1");if(v)S=Object.assign(S,JSON.parse(v));else seed()}catch(e){seed()}fix();LG=S.lang||"id"}
+var DN="Nama Kamu",DT="Tempat aku mencatat setiap trade, menyimpan catatan, dan mengevaluasi hasilnya.",S={name:DN,tag:DT,mode:"dark",tl:[],photo:"",pos:{},certs:[],accts:[],trades:[],lib:[],news:[]},tab="home",off=0,unit="r",moff=0,cur=null,LG="id",BOOT=1;
+function load(){try{var v=localStorage.getItem("rt1");if(v)S=Object.assign(S,JSON.parse(v));else seed()}catch(e){seed()}fix();LG=S.mode=="light"?"id":"en"}
 function fix(){if(!S.accts||!S.accts.length)S.accts=[{id:1,n:"Akun Utama",t:"Personal",b:0}];S.trades.forEach(function(t){if(!t.a)t.a=S.accts[0].id})}
 function save(){try{localStorage.setItem("rt1",JSON.stringify(S))}catch(e){}}
 function ds(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
@@ -150,17 +170,18 @@ function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;
 function $(i){return document.getElementById(i)}
 function fmt(v,u){var s=(v>0?"+":v<0?"−":"")+(u=="r"?Math.abs(v).toFixed(2).replace(/\.?0+$/,"")+"R":"$"+Math.abs(v).toFixed(2).replace(/\.00$/,""));return s}
 function cls(v){return v>0?"pos":v<0?"neg":""}
-var EN={"Beranda":"Home","Jurnal":"Journal","Catatan":"Notes","Berita":"News","Rekap":"Recap","Nama Kamu":"Your Name","Tempat aku mencatat setiap trade, menyimpan catatan, dan mengevaluasi hasilnya.":"This is where I journal every trade, keep my notes, and review my results.","Ganti foto":"Change photo","Kosongkan jurnal":"Clear journal","Yakin? Ketuk lagi":"Sure? Tap again","Reset posisi":"Reset position","Portofolio":"Portfolio","Total saldo":"Total balance","Belum ada akun.":"No accounts yet.","Selamat datang kembali,":"Welcome back,","Akun Kamu":"Your Accounts","Pilih akun untuk mulai mencatat trade.":"Select an account to start journaling your trades.","Saldo awal · kini":"Starting balance · now","Tambah akun":"Add account","Nama akun, mis. FundedNext":"Account name, e.g. FundedNext","Saldo awal ($)":"Starting balance ($)","‹ Akun":"‹ Accounts","Saldo":"Balance","Pair, mis. XAUUSD":"Pair, e.g. XAUUSD","Hasil (R)":"Result (R)","Hasil ($)":"Result ($)","Confluences (pisah dengan koma)":"Confluences (comma separated)","Alasan entry: setup, konfirmasi, kenapa masuk di level ini?":"Entry reason: setup, confirmation, why enter at this level?","Simpan trade":"Save trade","Belum ada trade di akun ini.":"No trades in this account yet.","Hapus?":"Delete?","Hapus":"Delete","Hapus akun":"Delete account","Isi nama akun.":"Enter an account name.","Isi tanggal, pair, dan hasil dalam R.":"Fill in date, pair, and result in R.","Cari catatan":"Search notes","Judul":"Title","Tidak ada yang cocok.":"No matches.","Belum ada catatan. Ketuk + untuk mulai menulis.":"No notes yet. Tap + to start writing.","Semua":"All","Catatan baru":"New note","Kembali":"Back","Tulis sesuatu…":"Write something…","Tambahkan berita high-impact yang kamu pantau. Waktu mengikuti jam perangkatmu.":"Add the high-impact news you follow. Times follow your device clock.","Berita berikutnya":"Next news","Belum ada berita terjadwal":"No scheduled news","Nama berita, mis. USD CPI":"News name, e.g. USD CPI","Tambah berita":"Add news","Belum ada berita. Tambahkan jadwal CPI, NFP, atau suku bunga.":"No news yet. Add CPI, NFP, or rate decision schedules.","lewat":"past","Isi nama berita dan waktunya.":"Enter the news name and time.","Laporan mingguan dari jurnalmu.":"Weekly report from your journal.","Ganti tema":"Toggle theme","Laporan mingguan":"Weekly report","hari hijau":"green days","trade":"trades","Pergerakan":"Trajectory","Grafik kumulatif mingguan":"Cumulative weekly chart","Hari:":"Days:","Sertifikat":"Certificates","Tambahkan foto sertifikat funded-mu di sini.":"Add your funded certificate photos here.","Tambah foto":"Add photo","Foto sertifikat":"Certificate photo","Keterangan":"Caption","Tutup":"Close","Gagal menyimpan foto.":"Couldn't save the photo.","Min":"Sun","Sen":"Mon","Sel":"Tue","Rab":"Wed","Kam":"Thu","Jum":"Fri","Sab":"Sat"};
+var EN={"Beranda":"Home","Jurnal":"Journal","Akun":"Account","Abadi":"Timeless","Video dan kata-kata yang membuatmu tetap jalan.":"Videos and words that keep you going.","Belum ada video. Ketuk + untuk menambahkan video motivasimu.":"No videos yet. Tap + to add your motivation videos.","Tulis kata-kata yang ingin kamu ingat…":"Write the words you want to remember…","Siapa yang mengucapkannya? (opsional)":"Who said it? (optional)","Tambah video":"Add video","Gagal menyimpan video.":"Couldn't save the video.","Menyimpan video…":"Saving video…","Berita":"News","Rekap":"Recap","Nama Kamu":"Your Name","Tempat aku mencatat setiap trade, menyimpan catatan, dan mengevaluasi hasilnya.":"This is where I journal every trade, keep my notes, and review my results.","Ganti foto":"Change photo","Kosongkan trade":"Clear trades","Yakin? Ketuk lagi":"Sure? Tap again","Reset posisi":"Reset position","Portofolio":"Portfolio","Total saldo":"Total balance","Belum ada akun.":"No accounts yet.","Selamat datang kembali,":"Welcome back,","Akun Kamu":"Your Accounts","Pilih akun untuk mulai mencatat trade.":"Select an account to start journaling your trades.","Saldo awal · kini":"Starting balance · now","Tambah akun":"Add account","Nama akun, mis. FundedNext":"Account name, e.g. FundedNext","Saldo awal ($)":"Starting balance ($)","‹ Akun":"‹ Accounts","Saldo":"Balance","Pair, mis. XAUUSD":"Pair, e.g. XAUUSD","Hasil (R)":"Result (R)","Hasil ($)":"Result ($)","Confluences (pisah dengan koma)":"Confluences (comma separated)","Alasan entry: setup, konfirmasi, kenapa masuk di level ini?":"Entry reason: setup, confirmation, why enter at this level?","Simpan trade":"Save trade","Belum ada trade di akun ini.":"No trades in this account yet.","Hapus?":"Delete?","Hapus":"Delete","Hapus akun":"Delete account","Isi nama akun.":"Enter an account name.","Isi tanggal, pair, dan hasil dalam R.":"Fill in date, pair, and result in R.","Cari catatan":"Search notes","Judul":"Title","Tidak ada yang cocok.":"No matches.","Belum ada catatan. Ketuk + untuk mulai menulis.":"No notes yet. Tap + to start writing.","Semua":"All","Catatan baru":"New note","Kembali":"Back","Tulis sesuatu…":"Write something…","Tambahkan berita high-impact yang kamu pantau. Waktu mengikuti jam perangkatmu.":"Add the high-impact news you follow. Times follow your device clock.","Berita berikutnya":"Next news","Belum ada berita terjadwal":"No scheduled news","Nama berita, mis. USD CPI":"News name, e.g. USD CPI","Tambah berita":"Add news","Belum ada berita. Tambahkan jadwal CPI, NFP, atau suku bunga.":"No news yet. Add CPI, NFP, or rate decision schedules.","lewat":"past","Isi nama berita dan waktunya.":"Enter the news name and time.","Laporan mingguan dari trade kamu.":"Weekly report from your trades.","Ganti tema":"Toggle theme","Laporan mingguan":"Weekly report","hari hijau":"green days","trade":"trades","Pergerakan":"Trajectory","Grafik kumulatif mingguan":"Cumulative weekly chart","Hari:":"Days:","Sertifikat":"Certificates","Tambahkan foto sertifikat funded-mu di sini.":"Add your funded certificate photos here.","Tambah foto":"Add photo","Foto sertifikat":"Certificate photo","Keterangan":"Caption","Tutup":"Close","Gagal menyimpan foto.":"Couldn't save the photo.","Min":"Sun","Sen":"Mon","Sel":"Tue","Rab":"Wed","Kam":"Thu","Jum":"Fri","Sab":"Sat"};
 function L(s){return LG=="en"&&EN[s]?EN[s]:s}
 function LC(){return LG=="en"?"en-US":"id-ID"}
 var CAP=[];
 function cap(){var w=document.createTreeWalker($("home").parentNode,NodeFilter.SHOW_TEXT),n,k;while(n=w.nextNode()){k=n.nodeValue.trim();if(EN[k])CAP.push([n,n.nodeValue,k])}document.querySelectorAll("[placeholder]").forEach(function(e){var k=e.getAttribute("placeholder");if(EN[k])CAP.push([e,k])})}
 function sl(){var en=LG=="en";CAP.forEach(function(c){if(c.length>2)c[0].nodeValue=en?c[1].replace(c[2],EN[c[2]]):c[1];else c[0].setAttribute("placeholder",en?EN[c[1]]:c[1])})}
-function setLang(){LG=S.lang||"id";document.documentElement.lang=LG;$("lang").classList.toggle("en",LG=="en");$("lang").setAttribute("aria-checked",LG=="en");sl();nav();draw()}
-var tabs=[["home","Beranda"],["journal","Jurnal"],["library","Catatan"],["news","Berita"],["recap","Rekap"]];
-function nav(){$("nav").innerHTML=tabs.map(function(t){return'<button data-t="'+t[0]+'" class="'+(t[0]==tab?"on":"")+'">'+L(t[1])+"</button>"}).join("");
+var MOON='<img alt="" src="data:image/webp;base64,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">',SUN='<svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="sb" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#26272a"/><stop offset="1" stop-color="#08080a"/></radialGradient><radialGradient id="sd" cx="42%" cy="34%" r="75%"><stop offset="0" stop-color="#fff4ea"/><stop offset=".45" stop-color="#ff7448"/><stop offset="1" stop-color="#c41f16"/></radialGradient><clipPath id="sc2"><circle cx="50" cy="52" r="23"/></clipPath></defs><circle cx="50" cy="50" r="50" fill="url(#sb)"/><path d="M12 58A38 38 0 0 1 44 12" fill="none" stroke="#e0382a" stroke-width="3.2" stroke-linecap="round"/><path d="M20 70A38 38 0 0 0 80 78" fill="none" stroke="#f3f3f1" stroke-width="1.6" stroke-linecap="round" opacity=".8"/><g fill="#f3f3f1"><path id="ry" d="M50 15L51.7 25H48.3Z"/><use href="#ry" transform="rotate(45 50 52)"/><use href="#ry" transform="rotate(90 50 52)"/><use href="#ry" transform="rotate(135 50 52)"/><use href="#ry" transform="rotate(180 50 52)"/><use href="#ry" transform="rotate(225 50 52)"/><use href="#ry" transform="rotate(270 50 52)"/><use href="#ry" transform="rotate(315 50 52)"/></g><circle cx="50" cy="52" r="23" fill="url(#sd)"/><g clip-path="url(#sc2)"><path d="M26 78L39 58L46 65L56 50L69 70L74 78Z" fill="#101012"/></g><path d="M52 40q3.2-3.6 6.6 0M60 37q2.8-3 5.6 0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>';
+function setMode(){var dk=S.mode!="light";LG=dk?"en":"id";var r=document.documentElement;r.dataset.theme=dk?"dark":"light";r.lang=LG;$("tm").innerHTML=dk?MOON:SUN;$("tm").setAttribute("aria-label",L("Ganti tema"));$("tm").setAttribute("aria-pressed",dk);sl();nav();draw()}
+var tabs=[["home","Beranda"],["library","Jurnal"],["journal","Akun"],["news","Berita"],["recap","Rekap"],["timeless","Abadi"]];
+function nav(){$("tb").innerHTML=tabs.map(function(t){return'<button data-t="'+t[0]+'" class="'+(t[0]==tab?"on":"")+'">'+L(t[1])+"</button>"}).join("");
 document.querySelectorAll("section").forEach(function(s){s.classList.toggle("on",s.id==tab)});
-if(!BOOT&&location.hash.slice(1)!=tab)history.replaceState(null,"","#"+tab)}
+if(!BOOT&&location.hash.slice(1)!=tab)history.replaceState(null,"","#"+tab);var o=$("tb").querySelector(".on");if(o)$("tb").scrollLeft=o.offsetLeft-($("tb").clientWidth-o.offsetWidth)/2}
 $("nav").onclick=function(e){var t=e.target.dataset.t;if(t){tab=t;nav();draw()}};
 function weekSum(o){var m=mon(o),days=[];for(var i=0;i<5;i++){var d=new Date(m);d.setDate(d.getDate()+i);days.push({k:ds(d),l:["Sen","Sel","Rab","Kam","Jum"][i],r:0,u:0,n:0})}
 S.trades.forEach(function(t){days.forEach(function(d){if(d.k==t.d){d.r+=t.r;d.u+=t.u;d.n++}})});return{m:m,days:days}}
@@ -193,7 +214,7 @@ function toast(m){var t=$("ts");if(!t){t=document.createElement("div");t.id="ts"
 
 $("pb").onclick=function(){$("pf").click()};
 $("pf").onchange=function(){var f=this.files[0];if(!f)return;var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var c=document.createElement("canvas"),s=Math.min(1,800/Math.max(im.width,im.height));c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);S.photo=c.toDataURL("image/jpeg",.8);URL.revokeObjectURL(u);S.pos.ph=null;FL.ph.fx=.5;FL.ph.fy=.5;FL.ph.init=0;save();drawHome()};im.src=u};
-$("rs").onclick=function(){var b=this,t=b.firstChild;if(b.dataset.s){S.trades=[];save();draw();delete b.dataset.s;t.nodeValue=L("Kosongkan jurnal")}else{b.dataset.s=1;t.nodeValue=L("Yakin? Ketuk lagi");setTimeout(function(){delete b.dataset.s;t.nodeValue=L("Kosongkan jurnal")},3000)}};
+$("rs").onclick=function(){var b=this,t=b.firstChild;if(b.dataset.s){S.trades=[];save();draw();delete b.dataset.s;t.nodeValue=L("Kosongkan trade")}else{b.dataset.s=1;t.nodeValue=L("Yakin? Ketuk lagi");setTimeout(function(){delete b.dataset.s;t.nodeValue=L("Kosongkan trade")},3000)}};
 function bal(a){var v=a.b;S.trades.forEach(function(t){if(t.a==a.id)v+=t.u});return v}
 function mny(v){return(v<0?"−$":"$")+Math.abs(v).toLocaleString("en-US",{maximumFractionDigits:2})}
 function O(a,p){return'<option value="">'+p+"</option>"+a.map(function(x){return"<option>"+x+"</option>"}).join("")}
@@ -273,7 +294,6 @@ w.days.map(function(d){var v=d[k];return'<div class="drow"><b>'+L(d.l)+'</b><div
 $("uR").classList.toggle("on",unit=="r");$("uD").classList.toggle("on",unit=="u");drawC()}
 $("pv").onclick=function(){off--;drawR()};$("nx").onclick=function(){off++;drawR()};
 $("uR").onclick=function(){unit="r";drawR()};$("uD").onclick=function(){unit="u";drawR()};
-$("th").onclick=function(){var r=document.documentElement,dark=r.dataset.theme?r.dataset.theme=="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=dark?"light":"dark"};
 function cf(v,u){var a=Math.abs(v);return u=="r"?a.toFixed(1).replace(/\.0$/,"")+"R":"$"+(a>=1000?(a/1000).toFixed(1).replace(/\.0$/,"")+"k":Math.round(a))}
 function drawC(){var d0=new Date();d0.setHours(12,0,0,0);d0.setDate(1);d0.setMonth(d0.getMonth()+moff);var y=d0.getFullYear(),m=d0.getMonth(),k=unit=="r"?"r":"u",dim=new Date(y,m+1,0).getDate(),st=d0.getDay(),pre=y+"-"+String(m+1).padStart(2,"0")+"-",map={},tot=0,days=0,today=ds(new Date());
 S.trades.forEach(function(t){if(t.d.indexOf(pre)==0){var e=map[t.d]||(map[t.d]={n:0,v:0});e.n++;e.v+=t[k]}});
@@ -306,7 +326,7 @@ if(o.dn){o.vx*=.85;o.vy*=.85}else{o.x+=o.vx;o.y+=o.vy;o.vx*=.95;o.vy*=.95;if(o.x
 o.rot+=(Math.max(-9,Math.min(9,o.vx*1.4))-o.rot)*.12;var s=t/1000+o.ph,a=k=="lg"?0:1;
 e.style.transform="translate("+(o.x+Math.sin(s*.9)*3*a).toFixed(1)+"px,"+(o.y+Math.cos(s*1.2)*5*a).toFixed(1)+"px) rotate("+o.rot.toFixed(2)+"deg)"}}
 fl("ph","hero","ph",.5,.5);fl("lgw","home","lg",0,0);requestAnimationFrame(loop);
-$("lang").onclick=function(){S.lang=LG=="en"?"id":"en";save();setLang()};
+$("tm").onclick=function(){S.mode=S.mode=="light"?"dark":"light";save();setMode()};
 $("rp").onclick=function(){S.pos={};for(var k in FL){var o=FL[k];o.fx=k=="ph"?.5:0;o.fy=k=="ph"?.5:0;o.init=0;o.vx=0;o.vy=0}save()};
 function splash(){var sp=$("sp"),sk=$("sk");if(!sp)return;if(matchMedia("(prefers-reduced-motion:reduce)").matches){sp.remove();return}
 var Ls=sp.querySelectorAll(".lt"),wd=$("wd"),sr=$("sr"),rg=$("rg2"),done=0,t0=0,ST=200,SG=100,LD=780,TS=1480,TH=1600,TE=2400,TX=2750,W=760;
@@ -331,9 +351,32 @@ if(h>0){q=Math.min(1,h/420);rg.style.opacity=(.55*(1-q)).toFixed(3);rg.style.tra
 if(m>TE){q=Math.min(1,(m-TE)/(TX-TE));sp.style.opacity=(1-q).toFixed(3);sk.style.transform+=" scale("+(1+.05*q).toFixed(3)+")"}
 if(m>=TX)end();else requestAnimationFrame(f)}
 requestAnimationFrame(f)}
-function draw(){drawHome();drawJ();drawL();drawN();drawR()}
+var TV=null,TSV=0;
+function poster(b){return new Promise(function(ok){var v=document.createElement("video"),u=URL.createObjectURL(b),dn=0;function fin(x){if(dn)return;dn=1;URL.revokeObjectURL(u);ok(x||null)}
+v.muted=true;v.playsInline=true;v.preload="auto";
+v.onloadeddata=function(){try{v.currentTime=Math.min(1,(v.duration||1)/10)}catch(e){fin()}};
+v.onseeked=function(){var w=v.videoWidth,h=v.videoHeight;if(!w||!h)return fin();var s=Math.min(1,640/Math.max(w,h)),c=document.createElement("canvas");c.width=Math.round(w*s);c.height=Math.round(h*s);c.getContext("2d").drawImage(v,0,0,c.width,c.height);c.toBlob(fin,"image/jpeg",.8)};
+v.onerror=function(){fin()};setTimeout(fin,7000);v.src=u})}
+function tc(t){var u=t.p&&URLS[t.p];return'<div class="vc" data-v="'+t.id+'"><div class="vp">'+(t.p?'<img data-im="'+t.p+'"'+(u?' src="'+u+'"':"")+' alt="">':"")+'<i class="pl"></i></div>'+(t.q||t.a?'<div class="vq">'+(t.q?"<p>"+esc(t.q)+"</p>":"")+(t.a?"<span>"+esc(t.a)+"</span>":"")+"</div>":"")+"</div>"}
+function drawT(){$("tlist").innerHTML=S.tl.length?S.tl.slice().sort(function(a,b){return b.ts-a.ts}).map(tc).join(""):'<p class="mut">'+L("Belum ada video. Ketuk + untuk menambahkan video motivasimu.")+"</p>";$("tfab").setAttribute("aria-label",L("Tambah video"));fillIm($("tlist"))}
+$("tfab").onclick=function(){$("tfile").click()};
+$("tfile").onchange=function(){var fs=[].slice.call(this.files),last=null;this.value="";if(!fs.length)return;toast(L("Menyimpan video…"));
+return fs.reduce(function(p,f,i){return p.then(function(){var id=Date.now()+i,vk="tv"+id,pk="tp"+id,t={id:id,v:vk,p:"",q:"",a:"",ts:id};return dbPut(vk,f).then(function(){return poster(f)}).then(function(b){return b?dbPut(pk,b).then(function(){t.p=pk}):0}).then(function(){S.tl.push(t);last=t})})},Promise.resolve()).then(function(){save();drawT();if(fs.length==1&&last)tOpen(last,1)}).catch(function(){save();drawT();toast(L("Gagal menyimpan video."))})};
+$("tlist").onclick=function(e){var c=e.target.closest("[data-v]");if(c){var t=S.tl.filter(function(x){return x.id==c.dataset.v})[0];if(t)tOpen(t)}};
+function tFit(){var q=$("tvq"),n=q.value.length;q.style.fontSize=(n>220?19:n>120?22:26)+"px";q.style.height="auto";q.style.height=Math.max(q.scrollHeight,110)+"px"}
+function tOpen(t,f){TV=t;var v=$("tvv");$("tvq").value=t.q||"";$("tva").value=t.a||"";$("tvq").placeholder=L("Tulis kata-kata yang ingin kamu ingat…");$("tva").placeholder=L("Siapa yang mengucapkannya? (opsional)");$("tvk").setAttribute("aria-label",L("Kembali"));$("tvd").setAttribute("aria-label",L("Hapus"));$("tvd").classList.remove("arm");delete $("tvd").dataset.s;
+v.removeAttribute("src");$("tv").hidden=false;tFit();oOpen(tFinish);
+url(t.v).then(function(u){if(TV===t){v.src=u;var p=v.play();if(p&&p.catch)p.catch(function(){})}}).catch(function(){});if(f)$("tvq").focus()}
+function tCommit(){if(!TV)return;TV.q=$("tvq").value.trim();TV.a=$("tva").value.trim();save()}
+function tDirty(){tFit();clearTimeout(TSV);TSV=setTimeout(tCommit,400)}
+function tFinish(){clearTimeout(TSV);tCommit();var v=$("tvv");v.pause();v.removeAttribute("src");v.load();$("tv").hidden=true;TV=null;drawT()}
+$("tvq").oninput=$("tva").oninput=tDirty;
+$("tvk").onclick=oBack;
+$("tvd").onclick=function(){var b=this;if(!b.dataset.s){b.dataset.s=1;b.classList.add("arm");toast(L("Yakin? Ketuk lagi"));setTimeout(function(){delete b.dataset.s;b.classList.remove("arm")},3000);return}
+var t=TV;[t.v,t.p].forEach(function(k){if(!k)return;dbDel(k).catch(function(){});if(URLS[k]){URL.revokeObjectURL(URLS[k]);delete URLS[k]}});S.tl=S.tl.filter(function(x){return x!==t});save();TV=null;oBack()};
+function draw(){drawHome();drawJ();drawL();drawN();drawR();drawT()}
 cap();load();var h=location.hash.slice(1);if(tabs.some(function(t){return t[0]==h}))tab=h;
-setLang();splash();
+setMode();splash();
 addEventListener("load",function(){setTimeout(function(){BOOT=0},60)});
 addEventListener("hashchange",function(){var h=location.hash.slice(1);if(tabs.some(function(t){return t[0]==h})){tab=h;nav()}});
 </script>
