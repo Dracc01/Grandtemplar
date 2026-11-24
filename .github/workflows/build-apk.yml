@@ -54,9 +54,9 @@ jobs:
                           d.ellipse([cx-k,cy-k,cx+k,cy+k],fill=(236,238,233,255) if v==1 else (160,166,158,255))
               xs=Image.new('RGBA',(S,S),(0,0,0,0));xd=ImageDraw.Draw(xs)
               for a,b,e,g in ((8.0,8.0,13.0,13.0),(13.0,8.0,8.0,13.0)):
-                  xd.line([o+a*p,o+b*p,o+e*p,o+g*p],fill=(166,240,77,255),width=int(p*1.6))
+                  xd.line([o+a*p,o+b*p,o+e*p,o+g*p],fill=(128,25,34,255),width=int(p*1.6))
                   for x,y in ((a,b),(e,g)):
-                      m=p*.8;xd.ellipse([o+x*p-m,o+y*p-m,o+x*p+m,o+y*p+m],fill=(166,240,77,255))
+                      m=p*.8;xd.ellipse([o+x*p-m,o+y*p-m,o+x*p+m,o+y*p+m],fill=(128,25,34,255))
               gl=xs.filter(ImageFilter.GaussianBlur(p*.9))
               gl.putalpha(gl.getchannel('A').point(lambda a:int(a*.5)))
               out=Image.alpha_composite(Image.alpha_composite(gl,im),xs)
